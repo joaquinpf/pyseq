@@ -148,6 +148,11 @@ class Item(str):
     def __getattr__(self, key):
         return getattr(self.item, key, None)
 
+    def __eq__(self, item):
+        if type(item) is not Item:
+            return False
+        return self.name == item.name
+
     def _get_path(self):
         return self.__path
 
@@ -382,6 +387,12 @@ class Sequence(list):
                 return True
         return False
 
+    def remove(self, item):
+        if type(item) is not Item:
+            item = Item(item)
+        log.debug('Removing %s', item.name)
+        super(Sequence, self).remove(item)
+            
     def append(self, item):
         """
         Adds another member to the sequence.
@@ -744,6 +755,10 @@ if __name__ == '__main__':
     seqs = getSequences(['fileA.1.rgb', 'fileA.2.rgb', 'fileB.1.rgb'])
     assert len(seqs) == 2
 
+    seqs = Sequence(['fileA.1.rgb', 'fileA.2.rgb', 'fileA.3.rgb'])
+    seqs.remove('fileA.2.rgb')
+    assert len(seqs) == 2
+
     # get a diff of two files in the same seq
     d = diff('fileA.0001.dpx', 'fileA.0002.dpx')
     assert d[0]['frames'] == ('0001', '0002')
@@ -768,6 +783,8 @@ if __name__ == '__main__':
     assert seq.head() == '012_vb_110_v001.' and seq.tail() == '.png'
     assert seq.frames() == range(1, 11)
 
+
+    
     # grab all the seqs in the tests dir
     seqs = getSequences(os.path.join(os.path.dirname(__file__), 'tests'))
     for s in seqs:
