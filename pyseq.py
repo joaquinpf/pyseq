@@ -388,6 +388,10 @@ class Sequence(list):
         return False
 
     def remove(self, item):
+        """
+        Remove a member of the sequence
+        :param item: pyseq.Item object
+        """
         if type(item) is not Item:
             item = Item(item)
         log.debug('Removing %s', item.name)
