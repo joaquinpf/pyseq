@@ -383,6 +383,8 @@ class Sequence(list):
             if type(item) is not Item:
                 item = Item(item)
             comp = self[-1]
+            if comp == item:
+                return True
             if comp.isSibling(item) and comp.parts == item.parts:
                 return True
         return False
